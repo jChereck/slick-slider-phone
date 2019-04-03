@@ -1,7 +1,7 @@
 #include "mat.h"
 
 
-void main(){
+int main(){
 
-	return;
+	return 0;
 }
