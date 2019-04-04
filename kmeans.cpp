@@ -2,6 +2,9 @@
 #include "mat.h"
 #include <math.h>
 
+double kmeans(Matrix mIn, int K);
+double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R);
+double eucDist(double x1, double y1, double x2, double y2);
 
 int main(int argc, char *argv[]){
 
@@ -26,14 +29,14 @@ int main(int argc, char *argv[]){
 	//Run K-means algorithm T times
 	for( int times = 0; times < T; times++){
 
-		kmeans(mIn);
+		kmeans(mIn, K);
 
 	}
 
 }
 
 
-double kmeans(Matrix mIn){
+double kmeans(Matrix mIn, int K){
 
 	//Initialize K centroids
 	Matrix mCent(K,2,0.0);
@@ -62,13 +65,13 @@ double kmeans(Matrix mIn){
 		converged = true;
 		
 		//Match points to centroids
-		for( int p = 0, p < mX.numRows(); p++ ){
+		for( int p = 0; p < mX.numRows(); p++ ){
 			//initialize to a distance >= min dist
 			double minDist = pointDist(mX, p, mCent, 0);
 			//keep track of closest centroid
 			int closest = 0;
 			
-			for( int c = 0, c < mCent.numRows(), c++ ){
+			for( int c = 0; c < mCent.numRows(); c++ ){
 				
 				int curDist = pointDist(mX, p, mCent, c);
 				if( minDist > curDist ){
@@ -84,8 +87,17 @@ double kmeans(Matrix mIn){
 			}
 				
 		}
+	
+		//move centroids
+		double centMeans[K][3] = {}
+		for( int p = 0; p < mX.numRows(); p++ ){
+			centMeans[mX.get(p,2)][1] += mX.get(p,1
 
 	}
+
+	//print out data on converged points
+	printf("Done!\n");
+	mCent.print();
 
 	return 0.0;
 }
@@ -95,5 +107,5 @@ double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R){
 }
 
 double eucDist(double x1, double y1, double x2, double y2){
-	return math.sqrt( math.pow( (x1-x2), 2 ) + math.pow( (y1-y2), 2 ) );
+	return sqrt( pow( (x1-x2), 2 ) + pow( (y1-y2), 2 ) );
 }
