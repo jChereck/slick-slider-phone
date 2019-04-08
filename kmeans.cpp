@@ -39,29 +39,28 @@ int main(int argc, char *argv[]){
 double kmeans(Matrix mIn, int K){
 
 	//Initialize K centroids
-	Matrix mCent(K,2,0.0);
-	double x_min = mIn.minCol(0);
-	double x_max = mIn.maxCol(0);
-	double y_min = mIn.minCol(1);
-	double y_max = mIn.maxCol(1);
-	
-	mCent.randCol(0,x_min,x_max);
-	mCent.randCol(1,y_min,y_max);
+	int xDims = mIn.numCols();
+	Matrix mCent(K,xDims,0.0);
 
-	printf("xmin %f xmax%f\tymin%f ymax%f\n",x_min, x_max, y_min, y_max);
-	mCent.print();
+	for( int x = 0; x < xDims; x++ ){
+		double min = mIn.minCol(x);
+		double max = mIn.maxCol(x);
 	
-
+		mCent.randCol(x,min,max);
+	}
 
 	//Setup for K-means algorithm
 	bool converged = false;
 
-	//mX is mIn plus third row to keep track of centroid each point is associated with
-	Matrix mX(mIn.numRows(), 3, -1.0);
+	//mX is mIn plus extra column to keep track of centroid each point is associated with
+	Matrix mX(mIn.numRows(), xDims + 1, 0.0);
 	mX.insert(mIn,0,0);
 
+	//keep track of means of centroids
+	double centMeans[K][xDims+1] = {};
+
 	while( !converged ){
-		//set flag to flip of any points change centroids
+		//set flag to flip if any points change centroids
 		converged = true;
 		
 		//Match points to centroids
@@ -81,23 +80,49 @@ double kmeans(Matrix mIn, int K){
 			}
 			
 			//Update closest centroid if changed
-			if( mX.get(p,2) != closest ){
-				mX.set(p,2,closest);
+			if( mX.get(p,xDims) != closest ){
+				mX.set(p,xDims,closest);
 				converged = false;
 			}
+
+			//Sum up totals to find mean
+			for( int x = 0; x < xDims; x++ ){
+				centMeans[ (int) mX.get(p,xDims)][x] += mX.get(p,x);
+			}
+			centMeans[ (int) mX.get(p,xDims)][xDims]++;
 				
 		}
+
+		/*
+		for( int k = 0; k < K; k++ ){
+			for( int x = 0; x < xDims + 1; x++ ){
+				printf("%f\t",centMeans[k][x]);
+			}
+			printf("|\n");
+		}	
+		*/
 	
 		//move centroids
-		double centMeans[K][3] = {}
-		for( int p = 0; p < mX.numRows(); p++ ){
-			centMeans[mX.get(p,2)][1] += mX.get(p,1
+		for( int cent = 0; cent < K; cent++ ){
+			for( int x = 0; x < xDims; x++ ){
+				double newCoord = centMeans[cent][x]/centMeans[cent][xDims];
+				mCent.set(cent, x, newCoord);
+			}
+		}
 
 	}
 
 	//print out data on converged points
-	printf("Done!\n");
-	mCent.print();
+	mCent.printfmt("Points:");
+	double minD = pointDist(mCent, 0, mCent, 1);
+	for( int x = 0; x < K; x++ ){
+		for( int y = x + 1; y < K; y++ ){
+			double newD = pointDist(mCent, x, mCent, y);
+			if( newD < minD ){ minD = newD; }
+		}
+		
+	}
+	printf("K: %i  MinD: %f\n", K, minD);
 
 	return 0.0;
 }
