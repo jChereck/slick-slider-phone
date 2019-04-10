@@ -52,7 +52,13 @@ double kmeans(Matrix mIn, int K){
 	mX.insert(mIn,0,0);
 
 	//keep track of means of centroids
-	double centMeans[K][xDims+1] = {};
+	double centMeans[K][xDims+1];
+	//initialize centMeans to 0
+	for( int k = 0; k < K; k++ ){
+		for( int x = 0; x < xDims + 1; x++ ){
+			centMeans[k][x] = 0.0;
+		}
+	}
 
 	while( !converged ){
 		//set flag to flip if any points change centroids
