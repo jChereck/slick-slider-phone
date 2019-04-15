@@ -5,6 +5,7 @@
 double kmeans(Matrix mIn, int K);
 double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R);
 double eucDist(double x1, double y1, double x2, double y2);
+double newDist(Matrix mP1, int p1R, Matrix mP2, int p2R);
 
 int main(int argc, char *argv[]){
 
@@ -72,13 +73,13 @@ double kmeans(Matrix mIn, int K){
 		//Match points to centroids
 		for( int p = 0; p < mX.numRows(); p++ ){
 			//initialize to a distance >= min dist
-			double minDist = pointDist(mX, p, mCent, 0);
+			double minDist = newDist(mX, p, mCent, 0);
 			//keep track of closest centroid
 			int closest = 0;
 			
 			for( int c = 0; c < mCent.numRows(); c++ ){
 				
-				int curDist = pointDist(mX, p, mCent, c);
+				int curDist = newDist(mX, p, mCent, c);
 				if( minDist > curDist ){
 					minDist = curDist;
 					closest = c;
@@ -111,6 +112,7 @@ double kmeans(Matrix mIn, int K){
 		//move centroids
 		for( int cent = 0; cent < K; cent++ ){
 			for( int x = 0; x < xDims; x++ ){
+				/*
 				//if centroid has no points matched to it
 				if( centMeans[cent][xDims] == 0.0 ){
 					printf("\n\n CENTROID HAS BEEN RELOCATED \n\n");
@@ -124,6 +126,7 @@ double kmeans(Matrix mIn, int K){
 					}
 
 				}	
+				*/
 				double newCoord = centMeans[cent][x]/centMeans[cent][xDims];
 				mCent.set(cent, x, newCoord);
 			}
@@ -133,10 +136,10 @@ double kmeans(Matrix mIn, int K){
 
 	//print out data on converged points
 	mCent.printfmt("Points:");
-	double minD = pointDist(mCent, 0, mCent, 1);
+	double minD = newDist(mCent, 0, mCent, 1);
 	for( int x = 0; x < K; x++ ){
 		for( int y = x + 1; y < K; y++ ){
-			double newD = pointDist(mCent, x, mCent, y);
+			double newD = newDist(mCent, x, mCent, y);
 			if( newD < minD ){ minD = newD; }
 		}
 		
@@ -146,6 +149,18 @@ double kmeans(Matrix mIn, int K){
 	return 0.0;
 }
 
+double newDist(Matrix mP1, int p1R, Matrix mP2, int p2R){
+	double dist = 0;
+	//mP1.print();
+	//printf("p1R %d p2R %d\n", p1R, p2R);
+	for(int i = 0; i < mP2.numCols(); i++){
+		//printf("i = %d/%d\n", i, mP1.numCols());
+		double temp = mP1.get(p1R,i) - mP2.get(p2R,i);
+		dist += temp * temp;
+	}
+	return dist;
+}
+		
 double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R){
 	return eucDist(mP1.get(p1R,0), mP1.get(p1R,1), mP2.get(p2R,0), mP2.get(p2R,1));
 }
