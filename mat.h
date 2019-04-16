@@ -267,6 +267,7 @@ public:
     // creates new matrix
     Matrix mapCol(double (*f)(int size, double *x)); // apply function to each column -> one double
     Matrix mapRow(double (*f)(int size, double *x)); // apply function to each row -> one double
+    double pointDist(int r1, int r2,const Matrix & other); //get distance between two specified row vectors within given matricies
     Matrix cartesianRow(double (*)(int, double*, double*), const Matrix &other);  // apply given function to the cartesian product of two vectors of row vectors
     Matrix seriesSampleCol(int col, int numsteps, int stride);   // sample a column as if a time series
 

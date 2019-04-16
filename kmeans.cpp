@@ -3,7 +3,7 @@
 #include <math.h>
 
 double kmeans(Matrix mIn, int K);
-double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R);
+double pointDist2(Matrix mP1, int p1R, Matrix mP2, int p2R);
 double eucDist(double x1, double y1, double x2, double y2);
 double newDist(Matrix mP1, int p1R, Matrix mP2, int p2R);
 
@@ -38,6 +38,8 @@ int main(int argc, char *argv[]){
 
 
 double kmeans(Matrix mIn, int K){
+	printf("test");
+	fflush(stdout);
 
 	//Initialize K centroids
 	int xDims = mIn.numCols();
@@ -72,14 +74,20 @@ double kmeans(Matrix mIn, int K){
 		
 		//Match points to centroids
 		for( int p = 0; p < mX.numRows(); p++ ){
+			//printf("A");
+			fflush(stdout);
 			//initialize to a distance >= min dist
-			double minDist = newDist(mX, p, mCent, 0);
+			//double minDist = newDist(mX, p, mCent, 0);
+			double minDist = mCent.pointDist(0,p,mX);
 			//keep track of closest centroid
 			int closest = 0;
 			
 			for( int c = 0; c < mCent.numRows(); c++ ){
 				
-				int curDist = newDist(mX, p, mCent, c);
+				//printf("B");
+				fflush(stdout);
+				//int curDist = newDist(mX, p, mCent, c);
+				int curDist = mCent.pointDist(c,p,mX);
 				if( minDist > curDist ){
 					minDist = curDist;
 					closest = c;
@@ -136,10 +144,12 @@ double kmeans(Matrix mIn, int K){
 
 	//print out data on converged points
 	mCent.printfmt("Points:");
-	double minD = newDist(mCent, 0, mCent, 1);
+	//double minD = newDist(mCent, 0, mCent, 1);
+	double minD = mCent.pointDist(1,0,mCent);
 	for( int x = 0; x < K; x++ ){
 		for( int y = x + 1; y < K; y++ ){
-			double newD = newDist(mCent, x, mCent, y);
+			//double newD = newDist(mCent, x, mCent, y);
+			double newD = mCent.pointDist(y,x,mCent);
 			if( newD < minD ){ minD = newD; }
 		}
 		
@@ -161,7 +171,7 @@ double newDist(Matrix mP1, int p1R, Matrix mP2, int p2R){
 	return dist;
 }
 		
-double pointDist(Matrix mP1, int p1R, Matrix mP2, int p2R){
+double pointDist2(Matrix mP1, int p1R, Matrix mP2, int p2R){
 	return eucDist(mP1.get(p1R,0), mP1.get(p1R,1), mP2.get(p2R,0), mP2.get(p2R,1));
 }
 

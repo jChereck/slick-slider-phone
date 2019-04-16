@@ -2130,7 +2130,20 @@ Matrix Matrix::mapCol(double (*f)(int size, double *x))
     return out;
 }
 
-
+//gives euclidian distance between two row vectors from two matricies (using number of elements in each row from matrix the function was called from)
+double Matrix::pointDist(int r1, int r2, const Matrix & other){
+	double dist = 0.0;
+	//printf("C");
+	fflush(stdout);
+	//printf("r1 %d r2 %d max1 %d max2 %d\n", r1, r2, maxr, other.maxr);
+	for(int i = 0; i < maxc; i++){
+		double temp = m[r1][i] - other.m[r2][i];
+		dist += temp * temp;
+	}
+	//printf("D");
+	fflush(stdout);
+	return dist;
+}
 
 // performs the function over the cartesian product over the rows of
 // the two matrices.  WARNING: allocates new matrix for answer
