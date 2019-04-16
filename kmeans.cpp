@@ -38,8 +38,6 @@ int main(int argc, char *argv[]){
 
 
 double kmeans(Matrix mIn, int K){
-	printf("test");
-	fflush(stdout);
 
 	//Initialize K centroids
 	int xDims = mIn.numCols();
@@ -120,21 +118,22 @@ double kmeans(Matrix mIn, int K){
 		//move centroids
 		for( int cent = 0; cent < K; cent++ ){
 			for( int x = 0; x < xDims; x++ ){
-				/*
+				
 				//if centroid has no points matched to it
 				if( centMeans[cent][xDims] == 0.0 ){
-					printf("\n\n CENTROID HAS BEEN RELOCATED \n\n");
+					//printf("\n\n CENTROID HAS BEEN RELOCATED \n\n");
 					//change that centroid to a random point between min/max of inputs
 					mCent.insert( mIn.extract( randMod(mIn.numRows()) ,0 ,1 ,0 ), cent, 0 );
 					for( int x = 0; x < xDims; x++ ){
 						double min = mIn.minCol(x);
 						double max = mIn.maxCol(x);
 
-						mCent.set( x, cent, (randUnit() * (max-min)) + min );
+						//mCent.set( x, cent, (randUnit() * (max-min)) + min );
+						mCent.set( cent, x, (randUnit() * (max-min)) + min );
 					}
 
 				}	
-				*/
+				
 				double newCoord = centMeans[cent][x]/centMeans[cent][xDims];
 				mCent.set(cent, x, newCoord);
 			}
@@ -143,6 +142,7 @@ double kmeans(Matrix mIn, int K){
 	}
 
 	//print out data on converged points
+	mCent.sortRows();
 	mCent.printfmt("Points:");
 	//double minD = newDist(mCent, 0, mCent, 1);
 	double minD = mCent.pointDist(1,0,mCent);
