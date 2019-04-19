@@ -54,15 +54,15 @@ double kmeans(Matrix mIn, int K){
 
 	//keep track of means of centroids
 	double centMeans[K][xDims+1];
-	//initialize centMeans to 0
-	for( int k = 0; k < K; k++ ){
-		for( int x = 0; x < xDims + 1; x++ ){
-			centMeans[k][x] = 0.0;
-		}
-	}
 
 	int loops = 0;
 	while( !converged ){
+		//initialize centMeans to 0
+		for( int k = 0; k < K; k++ ){
+			for( int x = 0; x < xDims + 1; x++ ){
+				centMeans[k][x] = 0.0;
+			}
+		}
 		//set flag to flip if any points change centroids
 		converged = true;
 		
@@ -115,7 +115,9 @@ double kmeans(Matrix mIn, int K){
 				if( centMeans[cent][xDims] == 0.0 ){
 					//change that centroid to a random point from input
 					mCent.insert( mIn.extract( randMod(mIn.numRows()) ,0 ,1 ,0 ), cent, 0 );
+					break;
 				}	
+
 				
 				
 				double newCoord = centMeans[cent][x]/centMeans[cent][xDims];
